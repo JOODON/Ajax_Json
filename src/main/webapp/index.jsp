@@ -18,7 +18,7 @@
         function searchProcess(){
             let table=document.getElementById("ajaxTable");
             table.innerHTML="";
-            if (request.readyState == 4 && request.readyState == 200){
+            if (request.readyState == 4 /*request.readyState == 200*/){
                 let object = eval('(' + request.responseText + ')');
                 let result=object.result;
                 for (let i=0; i<result.length; i++){

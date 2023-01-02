@@ -27,7 +27,7 @@ public class UserDao {
         ArrayList<User> userList=new ArrayList<User>();
         try {
             ps=conn.prepareStatement(SQL);
-            ps.setString(1,userName);
+            ps.setString(1,"%"+userName+"%");
             rs=ps.executeQuery();
             while (rs.next()){
                 User user=new User();
