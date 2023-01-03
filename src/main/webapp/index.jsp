@@ -9,17 +9,18 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"> </script>
     <script src="js/bootstrap.js"></script>
     <script type="text/javascript">
-        let request=new XMLHttpRequest();
+        let searchrequest=new XMLHttpRequest();
+        let registerrequest=new XMLHttpRequest();
         function searchFunction(){
-            request.open("Post","./UserSearchServlet?userName="+encodeURIComponent(document.getElementById("userName").value),true);
-            request.onreadystatechange=searchProcess;
-            request.send(null);
+            searchrequest.open("Post","./UserSearchServlet?userName="+encodeURIComponent(document.getElementById("userName").value),true);
+            searchrequest.onreadystatechange=searchProcess;
+            searchrequest.send(null);
         }
         function searchProcess(){
             let table=document.getElementById("ajaxTable");
             table.innerHTML="";
-            if (request.readyState == 4 /*request.readyState == 200*/){
-                let object = eval('(' + request.responseText + ')');
+            if (searchrequest.readyState == 4 && searchrequest.status==200){
+                let object = eval('(' + searchrequest.responseText + ')');
                 let result=object.result;
                 for (let i=0; i<result.length; i++){
                     let row=table.insertRow(0);
@@ -29,6 +30,36 @@
                     }
                 }
             }
+        }
+        function registerFunction(){
+            registerrequest.open("Post","./UserRegisterServlet?userName="+encodeURIComponent(document.getElementById("registerName").value)
+                +"&userAge="+encodeURIComponent(document.getElementById("registerAge").value)
+                +"&userGender="+encodeURIComponent($('input[name=registerGender]:checked').val())
+                +"&userEmail="+encodeURIComponent(document.getElementById("registerEmail").value),true);
+            registerrequest.onreadystatechange=registerProcess;
+            registerrequest.send(null);
+        }
+        function registerProcess(){
+            if (registerrequest.readyState == 4 && registerrequest.status==200){
+                let result=registerrequest.responseText;
+                if (result !=1){
+                    alert("등록에 실패 하셨습니다");
+                }
+                else {
+                    let userName=document.getElementById("userName");
+                    let registerUserName=document.getElementById("registerName");
+                    let registerUserAge=document.getElementById("registerAge");
+                    let registerUserEmail=document.getElementById("registerEmail");
+                    userName.value="";
+                    registerUserName.value="";
+                    registerUserAge.value="";
+                    registerUserEmail.value="";
+                    searchFunction();
+                }
+            }
+        }
+        window.onload=function (){
+            searchFunction();
         }
     </script>
 </head>
@@ -62,6 +93,47 @@
             </tbody>
         </table>
     </div>
+    <div class="container">
+        <table class="table" style="text-align: center ; border: 1px solid #dddddd">
+            <thead>
+                <tr>
+                    <th colspan="2" style="background-color: #fafafa; text-align: center">회원 등록 양식</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="background-color: #fafafa; text-align: center"><h5>이름</h5></td>
+                <td><input class="form-control" type="text" id="registerName" size="20"></td>
+            </tr>
+            <tr>
+                <td style="background-color: #fafafa; text-align: center"><h5>나이</h5></td>
+                <td><input class="form-control" type="text" id="registerAge" size="20"></td>
+            </tr>
+            <tr>
+                <td style="background-color: #fafafa; text-align: center"><h5>성별</h5></td>
+                <td>
+                    <div class="form-group" style="text-align: center; margin: 0 auto;">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary active">
+                                <input type="radio" name="registerGender" autocomplete="off" value="남자" checked>남자
+                            </label>
+                            <label class="btn btn-primary ">
+                                <input type="radio" name="registerGender" autocomplete="off" value="여자" >여자
+                            </label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td style="background-color: #fafafa; text-align: center"><h5>이메일</h5></td>
+                <td><input class="form-control" type="text" id="registerEmail" name="userEmail" size="200"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><button class="btn btn-primary pull-right" onclick="registerFunction()" type="button">등록</button></td>
+            </tr>
+            </tbody>
 
+        </table>
+    </div>
 </body>
 </html>

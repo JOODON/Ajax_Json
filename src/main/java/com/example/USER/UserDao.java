@@ -42,4 +42,18 @@ public class UserDao {
         }
         return userList;
     }
+    public int register(User user){
+        String sql="INSERT INTO user VALUES (?,?,?,?)";
+        try {
+            ps=conn.prepareStatement(sql);
+            ps.setString(1, user.getUserName());
+            ps.setInt(2,user.getUserAge());
+            ps.setString(3, user.getUserGender());
+            ps.setString(4, user.getUserEmail());
+            return ps.executeUpdate();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return -1;
+    }
 }
